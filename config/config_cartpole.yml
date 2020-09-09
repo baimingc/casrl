@@ -1,0 +1,59 @@
+# MPC controller configuration
+mpc_config:
+    constraint: True
+    prior_safety: False
+    optimizer: "Random"             # Random or CEM, # random may need to fix bugs
+    Random: # TODO: warning may contain not finished modification
+        env: 'swingup'           # 'stable'
+        horizon: 20               # how long of the horizon to predict
+        popsize: 1000            # how many random samples for mpc
+        particle: 1
+        gamma: 1              # reward discount coefficient
+        action_low: [-1]           # lower bound of the solution space
+        action_high: [1]           # upper bound of the solution space
+        action_dim: 1
+        particle: 1
+        max_iters: 20
+        num_elites: 50
+        epsilon: 0.001
+        alpha: 0.1
+        init_mean: 0
+        init_var: 1
+        action_cost: True
+        x_dot_cost: False
+    CEM:
+        env: 'swingup'
+        horizon: 20                # how long of the horizon to predict
+        popsize: 200               # how many random samples for mpc
+        particle: 1                # number of particles to enlarge
+        gamma: 1                   # reward discount coefficient
+        action_low: [-1]           # lower bound of the solution space
+        action_high: [1]           # upper bound of the solution space
+        action_dim: 1
+        max_iters: 5
+        num_elites: 20
+        epsilon: 0.001
+        alpha: 0.1
+        init_mean: 0
+        init_var: 1
+        action_cost: True
+        x_dot_cost: False
+
+
+NP_config:
+    model_config:
+        load_model: False           # If set true, you must specify the model path, otherwise train a new model
+        model_path: "path"              # the path to load the model
+        state_dim: 5                # environment states
+        action_dim: 1               # how many controls we need
+        output_dim: 5               # output dim
+        np_hidden_list: [64, 16, 2]        
+        np_hidden_list_decoder: [64, 16]         
+        np_latent_dim: 2
+        np_context_max_num: 100
+        np_predict_context_num: 500
+
+    training_config:
+        batch_size: 100
+        n_epochs: 100            # how many epoches to train the dynamic model
+        learning_rate: 0.0002    # learning rate

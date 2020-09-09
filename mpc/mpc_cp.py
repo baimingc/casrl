@@ -1,7 +1,5 @@
 import numpy as np
-from tqdm import trange, tqdm
 from .optimizers import RandomOptimizer, CEMOptimizer
-import copy
 import math
 
 class MPC(object):
@@ -11,7 +9,6 @@ class MPC(object):
         # mpc_config = config["mpc_config"]
         self.constraint = mpc_config["constraint"]
         self.prior_safety = mpc_config["prior_safety"]
-        self.only_prior_model = mpc_config["only_prior_model"]
         self.type = mpc_config["optimizer"]
         conf = mpc_config[self.type]
         self.horizon = conf["horizon"]
@@ -140,43 +137,22 @@ class MPC(object):
         costs = np.zeros(self.popsize*self.particle)
         state = np.repeat(self.state.reshape(1, -1), self.popsize*self.particle, axis=0)
         state_prior = state
-
-#         for t in range(self.horizon):
-#             action = actions[:, t, :]  # numpy array (batch_size x action dim)
-#             if not self.ground_truth:
-#                 state_predict = self.model.predict(state, action)
-#                 state_next = state_predict + state
-#                 state_next[:,5:] = state_predict[:,5:]
-#             else:
-#                 state_next = self.dumb_step(state, action)
-                
-#             cost = self.cartpole_cost(state_next, action)  # compute cost
-#             costs += cost * self.gamma**t
-#             state = copy.deepcopy(state_next)
-
-            
-            
+   
         for t in range(self.horizon):
             action = actions[:, t, :]  # numpy array (batch_size x action dim)
             
-            if not self.only_prior_model:
-                state_predict = self.model.predict(state, action)
-                state_next = state_predict + state
-                state_next[:,5:] = state_predict[:,5:]
-                cost = self.cartpole_cost(state_next, action)  # compute cost
-                state = state_next
+            state_predict = self.model.predict(state, action)
+            state_next = state_predict + state
+            state_next[:,5:] = state_predict[:,5:]
+            cost = self.cartpole_cost(state_next, action)  # compute cost
+            state = state_next
 
-                if self.prior_safety:
-                    state_next_prior = self.dumb_step(state_prior, action)
-                    cost += self.cartpole_cost_prior(state_next_prior, action)
-                    state_prior = state_next_prior
-
-                costs += cost * self.gamma**t
-            else:
+            if self.prior_safety:
                 state_next_prior = self.dumb_step(state_prior, action)
-                cost = self.cartpole_cost(state_next_prior, action)
+                cost += self.cartpole_cost_prior(state_next_prior, action)
                 state_prior = state_next_prior
-                costs += cost * self.gamma**t
+
+            costs += cost * self.gamma**t
             
         costs = np.mean(costs.reshape((self.particle, -1)), axis=0)
         return costs
@@ -216,13 +192,9 @@ class MPC(object):
                 sin_theta = np.sin(theta)
                 cos_theta = np.cos(theta)
             else:
-                # self.add_bound = 0.8
                 x = state[:, 0]
                 x_dot = state[:, 1]
                 cos_theta = state[:, 2]
-                # todo: initially the GP may predict -1.xxx for cos
-                # cos_theta[cos_theta < -1] = -1
-                # cos_theta[cos_theta > 1] = 1
                 sin_theta = state[:, 3]
                 theta_dot = state[:, 4]
             
@@ -244,28 +216,6 @@ class MPC(object):
                 reward += -0.001 * x_dot**2
 
             cost = -reward
-
-        elif self.env == 'stable':
-            # x [-2.4, 2.4], theta [-0.209, 0.209]
-            # self defined cost
-            x = state[:, 0]
-            x_dot = state[:, 1]
-            theta = state[:, 2]
-            theta_dot = state[:, 3]
-
-            if env_cost:
-                # the environment reward, not related to action
-                done1 = x < -self.task.x_threshold
-                done2 = x > self.task.x_threshold
-                done3 = theta < -self.task.theta_threshold_radians
-                done4 = theta > self.task.theta_threshold_radians
-                done = np.logical_or(np.logical_or(done1, done2), np.logical_or(done3, done4))
-                # if done, reward = 1, cost = -1, else reward = 0, cost = 0
-                cost = -np.ones(done.shape[0]) + done * 1
-            else:
-                # defined cost
-                cost = 0.1 * x ** 2 + theta ** 2 + 0.01 * (0.1 * x_dot ** 2 + theta_dot ** 2)
-#                 cost = 0.01 * (x ** 2) - np.cos(theta)
         return cost
 
     def cartpole_cost_prior(self, state, action, env_cost=False, obs=True):

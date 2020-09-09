@@ -1,0 +1,56 @@
+# MPC controller configuration
+mpc_config:
+    constraint: True
+    prior_safety: True
+    optimizer: "CEM"             # Random or CEM, # random may need to fix bugs
+    Random: 
+        horizon: 20               # how long of the horizon to predict
+        popsize: 2000            # how many random samples for mpc
+        particle: 1
+        gamma: 1              # reward discount coefficient
+        action_low: [-1]           # lower bound of the solution space
+        action_high: [1]           # upper bound of the solution space
+        action_dim: 7
+        max_iters: 20
+        num_elites: 100
+        epsilon: 0.001
+        alpha: 0.1
+        init_mean: 0
+        init_var: 1
+        action_cost: True
+        x_dot_cost: False
+    CEM:
+        horizon: 20                # how long of the horizon to predict
+        popsize: 200               # how many random samples for mpc
+        particle: 1                # number of particles to enlarge
+        gamma: 1                   # reward discount coefficient
+        action_low: [-1]           # lower bound of the solution space
+        action_high: [1]           # upper bound of the solution space
+        action_dim: 7
+        max_iters: 5
+        num_elites: 20
+        epsilon: 0.001
+        alpha: 0.1
+        init_mean: 0
+        init_var: 1
+        action_cost: True
+        x_dot_cost: False
+
+
+NP_config:
+    model_config:
+        load_model: False           # If set true, you must specify the model path, otherwise train a new model
+        model_path: "path"              # the path to load the model
+        state_dim: 23                # environment states
+        action_dim: 7               # how many controls we need
+        output_dim: 23               # output dim
+        np_hidden_list: [64, 64, 2]         #[1024, 1024, 1024, 1024]
+        np_hidden_list_decoder: [256, 256]         #[1024, 1024, 1024, 1024]
+        np_latent_dim: 2
+        np_context_max_num: 200
+        np_predict_context_num: 200
+
+    training_config:
+        batch_size: 100
+        n_epochs: 50            # how many epoches to train the dynamic model
+        learning_rate: 0.0001     # learning rate
