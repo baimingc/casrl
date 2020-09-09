@@ -1,0 +1,31 @@
+I hope to release the full code before I graduate, but I haven't had time to do that yet, unfortunately. 
+I can share my current minimal version of it with you though, if that's helpful.
+
+The only env that's currently included from the paper is the cheetah environment with changing action definitions. However, the algorithm is here, so it should be good enough. 
+ 
+Here's a little bit of information if you'd like to try running this, either with your own envs or with the provided one.
+
+###################
+
+There's a conda env to help with setup/versions/etc.
+The readme tells you how to use the 3 scripts (train, sim, vis)
+
+The train script basically just trains a maml style model and gives you the theta*.
+Then, for the sim script, you have the option of different things:
+(2) means at each time step, always reset to theta* and then adapt from there using past k steps
+(3) means at each time step, use the past k steps to adapt away from whatever weight you had at the previous time step 
+(5) means mole (ours)
+###################
+
+parameters to perhaps tune, in meta-training stage (all of these are in launch_maml_train.py):
+'meta_batch_size', [16,32,64] #default is ~16, and this is how many different tasks to include in each maml update
+'metatrain_itr', [15] #this is the number of maml training iterations, where iteration is defined as collecting a bunch of rollouts with the latest model, and then retraining the model with all data... increase this as you wish (or as your losses/rewards indicate)
+'update_batch_size', [8,16] #this is K when we talk about using the past K steps in order to adapt the model. note that the training objective is basically: given the past K, do well on the next K
+'horizon', 'n_candidates', and 'max_path_length' #these 3 things depend on your environment, because these are just parameters for the MPC planner to do the rollouts
+###################
+
+parameters of importance for the actual mole part, i.e., what happens at run-time (these are in launch_maml_sim_policy.py, and em_iteration.py):
+temp #controls the hard/softness of the softmax when calculating probabilities
+refreshing_freq 
+alpha
+###################

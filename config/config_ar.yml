@@ -1,0 +1,111 @@
+gym_config:
+    render: False
+    task_dynamics_list: [0, 1, 2, 3, 4, 5]
+    subtask_episode: 10           # the number of episode for each subtask
+    subtask_episode_length: 200  # the length of each episode
+    task_episode: 100            # the number of the task episode
+    seed: 1000                   # seed for all environments
+    dynamics_name: [             # name of all environments
+        'CartPoleSwingUpEnvCm05Pm04Pl05-v0',
+        'CartPoleSwingUpEnvCm05Pm04Pl07-v0',
+        'CartPoleSwingUpEnvCm05Pm06Pl05-v0',
+        'CartPoleSwingUpEnvCm05Pm06Pl07-v0',
+        'CartPoleSwingUpEnvCm05Pm08Pl05-v0',
+        'CartPoleSwingUpEnvCm05Pm08Pl07-v0',
+    ]
+
+# MPC controller configuration
+mpc_config:
+    constraint: False
+    prior_safety: False
+    only_prior_model: False
+    optimizer: "CEM"             # Random or CEM, # random may need to fix bugs
+    Random: # TODO: warning may contain not finished modification
+        horizon: 20               # how long of the horizon to predict
+        popsize: 2000            # how many random samples for mpc
+        particle: 1
+        gamma: 1              # reward discount coefficient
+        action_low: [-1]           # lower bound of the solution space
+        action_high: [1]           # upper bound of the solution space
+        action_dim: 7
+        max_iters: 20
+        num_elites: 100
+        epsilon: 0.001
+        alpha: 0.1
+        init_mean: 0
+        init_var: 1
+        action_cost: True
+        x_dot_cost: False
+    CEM:
+        horizon: 20                # how long of the horizon to predict
+        popsize: 200               # how many random samples for mpc
+        particle: 1                # number of particles to enlarge
+        gamma: 1                   # reward discount coefficient
+        action_low: [-1]           # lower bound of the solution space
+        action_high: [1]           # upper bound of the solution space
+        action_dim: 7
+        max_iters: 5
+        num_elites: 20
+        epsilon: 0.001
+        alpha: 0.1
+        init_mean: 0
+        init_var: 1
+        action_cost: True
+        x_dot_cost: False
+
+SingleGP_config:
+    state_dim: 23                 # dimension of the state space
+    action_dim: 7                # dimension of the action space    
+    lr: 0.1                      # learning rate of the gaussian process
+    gp_iter: 3                   # iteration time of GP
+    max_inducing_point: 1300     # the data number after do a sparse operation
+    trigger_induce: 1500         # when n is larger than this value, do a sparse operation
+    sample_number: 100           # number of MC samples to find the highest lower bound
+    param: [                     # GP initilize and constraint parameters
+        0.001,    # noise_covar initilize
+        0.0001,   # noise_covar constraint
+        0.0,      # constant initilize
+        0.5,      # outputscale initilize
+        1.0,      # lengthscale initilize
+    ]
+
+
+NP_config:
+    model_config:
+        load_model: False           # If set true, you must specify the model path, otherwise train a new model
+        model_path: "./baselines/storage/example.ckpt" # the path to load the model
+        state_dim: 23                # environment states
+        action_dim: 7               # how many controls we need
+        output_dim: 23               # output dim
+        likelihood_method: 'gp'     # 'gp' like method or 'nn'
+        likelihood_value: 'loss'    # negative 'loss' for likelihood 'll'
+        sequential: False           # permute the data while training
+        virtual_batch: False        # To be updated
+        np_hidden_list: [64, 64, 2]         #[1024, 1024, 1024, 1024]
+        np_hidden_list_decoder: [256, 256]         #[1024, 1024, 1024, 1024]
+        np_latent_dim: 2
+        np_context_max_num: 200
+        np_predict_context_num: 200
+
+    training_config:
+        batch_size: 100
+        n_epochs: 50            # how many epoches to train the dynamic model
+        learning_rate: 0.0001     # learning rate
+
+        save_model_flag: False
+        save_model_path: "np_save_test.ckpt" # the path to save the model
+        validation_flag: False
+        validation_freq: 100      # the frequency of validation
+        validation_ratio: 0.1    # ratio of validation set
+        
+        
+maml_config:
+    state_dim: 23
+    action_dim: 7
+    adapt_iter: 10
+    alpha: 0.01
+    adapt_lr: 0.001
+    meta_lr: 0.001
+    meta_epoch: 30
+    meta_batch_size: 1 # one gradient descent
+    hidden_size: 500

@@ -1,0 +1,12 @@
+[32m[0413 19:47:13 @logger.py:103][0m Log file set to /home/mengdi/Dropbox/Research/3-DPGP/DPGP-MBRL/baselines/mbbl/log/mbrl-cemgym_cheetahpets-gt-gym_cheetah.log/mbrl-cemgym_cheetahpets-gt-gym_cheetah.log
+[32m[0413 19:47:14 @base_main.py:59][0m Training starts at /home/mengdi/Dropbox/Research/3-DPGP/DPGP-MBRL/baselines/mbbl
+[32m[0413 19:47:14 @base_worker.py:44][0m Worker 0 online
+[32m[0413 19:47:14 @base_worker.py:44][0m Worker 1 online
+[32m[0413 19:47:14 @base_worker.py:44][0m Worker 2 online
+[32m[0413 19:47:14 @base_worker.py:44][0m Worker 3 online
+[32m[0413 19:47:14 @base_worker.py:44][0m Worker 4 online
+[32m[0413 19:47:14 @base_worker.py:44][0m Worker 5 online
+[32m[0413 19:47:14 @base_worker.py:44][0m Worker 6 online
+[32m[0413 19:47:14 @base_worker.py:44][0m Worker 7 online
+[32m[0413 19:47:14 @base_worker.py:44][0m Worker 8 online
+[32m[0413 19:47:14 @base_worker.py:44][0m Worker 9 online

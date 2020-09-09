@@ -1,0 +1,61 @@
+
+seed: 0
+
+env:
+    name: 'HalfCheetahActionsEnv'       # Name of the environmnet
+    task: 'rand_sign'                   # Name of the task
+
+training:
+    pretrain_itr: 0                      # Number of pre-training iterations
+    metatrain_itr: 15                    # Number of meta-training iterations
+    meta_batch_size: 16                  # Number of tasks sampled per meta-update
+    update_batch_size: 8                 # Number of data points per inner-update ("K" in k-shot learning)
+    meta_lr: 0.001                       # Meta learning rate
+    update_lr: 0.01                      # Inner-update learning rate
+    num_updates: 1                       # Number of inner updates
+    meta_loss: False                     # If True, learns the loss in the inner-update
+    stop_grad: False                     # If True, do not use second derivatices in the inner-update
+    multistep_loss: False
+    meta_learn_lr: False
+    num_sgd_steps: 1
+    temp: 0.02
+    alpha: 5
+
+    doing_continual_for_onPolicy: False
+    doing_continual: False
+    ignore_absolute_xy: False
+
+sampler:
+    batch_size: 2000                    # Total number of datapoints collected during each data collection session (PER task)
+    batch_size_initial: 2000   
+    max_path_length: 500                # Maximum number of steps per rollout
+    max_epochs: 30                      # Maximum number of epochs before collecting new data
+    n_itr_rand: 1                       # Number of times we collect random data (instead of on-policy data)
+    max_buffer: 10000000                # Maximum number of timesteps in our buffer (used for retraining dynamics model)
+    train_policy: False
+    n_itr_policy: 5
+    multi_input: 0
+
+policy:
+    n_candidates: 1000                  # Number of candidates actions when performing MPC
+    horizon: 10                         # Horizon of the planning in the MPC
+    test_regressor: False
+
+model:
+    norm: None                          # Norm options: [None, 'batch_norm', 'layer_norm']
+    dim_hidden:                         # Dimension of the hidden layers
+        - 512
+        - 512
+        - 512
+    dim_conv1d:                         # Dimension of the 1d convolutions when learning the inner loss
+        - 8
+        - 8
+        - 8
+    dim_bias: 5
+
+logging:
+    log: True                           # Enables/Disables all the logging options
+    save_itr: 200                       # Number of gradient updates between saving the model
+    print_itr: 200                      # Number of gradient updates between printing results
+    summary_itr: 200                    # Number of gradient updates between summarizing results
+    log_dir: 'MOLE'                     # Directory where we save the data
