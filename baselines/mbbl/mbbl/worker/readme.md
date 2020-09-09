@@ -1,1 +1,0 @@
-rs: random shooting method
