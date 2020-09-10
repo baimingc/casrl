@@ -44,8 +44,8 @@ NP_config:
         state_dim: 23                # environment states
         action_dim: 7               # how many controls we need
         output_dim: 23               # output dim
-        np_hidden_list: [64, 64, 2]         #[1024, 1024, 1024, 1024]
-        np_hidden_list_decoder: [256, 256]         #[1024, 1024, 1024, 1024]
+        np_hidden_list: [128, 128, 2]         #[1024, 1024, 1024, 1024]
+        np_hidden_list_decoder: [128, 128]         #[1024, 1024, 1024, 1024]
         np_latent_dim: 2
         np_context_max_num: 200
         np_predict_context_num: 200
