@@ -1,6 +1,5 @@
-torch==1.4.0
-gpytorch==1.0.1
-matplotlib
-numpy
 scipy
-loguru
+matplotlib
+pandas
+gym==0.17.2
+torch==1.5.1
