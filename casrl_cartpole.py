@@ -78,6 +78,6 @@ for ep in range(test_episode):
                 log_name = time.strftime("%Y%m%d_%H%M%S")
             torch.save(model.model.state_dict(), './log/cp_{}_{}_model.pth'.format(log_name, ep))
             torch.save(log, './log/cp_{}_log.pth'.format(log_name))
-            print('model saved at'+log_name)
+            print('model saved at '+log_name)
     model.reset()
     model.train()

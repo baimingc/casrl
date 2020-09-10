@@ -49,7 +49,7 @@ for ep in range(test_episode):
             action = np.array(mpc_controller.act(model=model, state=obs, ground_truth=True))
         else:
             action = np.array([0.0, 0.0])
-        obs_next, reward, done, violation = env.step(action)
+        obs_next, reward, done, info = env.step(action)
         task_steps += 1
         A.append(action)
         O.append(obs_next)
@@ -57,7 +57,7 @@ for ep in range(test_episode):
         model.data_process([0, obs, action, obs_next - obs])
         obs = obs_next
         acc_reward += reward
-    print('step: ', i, 'acc_reward: ', acc_reward)
+    print('step: ', i, 'acc_reward: ', acc_reward, info)
     env.close()
 
     if done:
@@ -73,6 +73,6 @@ for ep in range(test_episode):
                 log_name = time.strftime("%Y%m%d_%H%M%S")
             torch.save(model.model.state_dict(), './log/mg_{}_{}_model.pth'.format(log_name, ep))
             torch.save(log, './log/mg_{}_log.pth'.format(log_name))
-            print('model saved at'+log_name)
+            print('model saved at '+log_name)
     model.reset()
     model.train()

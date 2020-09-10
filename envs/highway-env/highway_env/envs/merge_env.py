@@ -18,14 +18,6 @@ class MergeEnv(AbstractEnv):
     It is rewarded for maintaining a high speed and avoiding collisions, but also making room for merging
     vehicles.
     """
-
-    COLLISION_REWARD: float = -1
-    RIGHT_LANE_REWARD: float = 0.1
-    HIGH_SPEED_REWARD: float = 0.002
-    MERGING_SPEED_REWARD: float = -0.5
-    LANE_CHANGE_REWARD: float = -0.05
-
-
     @classmethod
     def default_config(cls) -> dict:
         config = super().default_config()
@@ -49,6 +41,14 @@ class MergeEnv(AbstractEnv):
         })
         return config
 
+
+
+    COLLISION_REWARD: float = -100
+    RIGHT_LANE_REWARD: float = 0.15
+    HIGH_SPEED_REWARD: float = 0.002
+    MERGING_SPEED_REWARD: float = -0.5
+    LANE_CHANGE_REWARD: float = -0.05
+
     def _reward(self, action: int) -> float:
         """
         The vehicle is rewarded for driving with high speed on lanes to the right and avoiding collisions
@@ -58,11 +58,6 @@ class MergeEnv(AbstractEnv):
         :param action: the action performed
         :return: the reward of the state-action transition
         """
-        action_reward = {0: self.LANE_CHANGE_REWARD,
-                         1: 0,
-                         2: self.LANE_CHANGE_REWARD,
-                         3: 0,
-                         4: 0}
         # reward = self.COLLISION_REWARD * self.vehicle.crashed \
         #          + self.RIGHT_LANE_REWARD * self.vehicle.lane_index[2] / 1 \
         #          + self.HIGH_SPEED_REWARD * self.vehicle.speed_index / (self.vehicle.SPEED_COUNT - 1)
@@ -83,7 +78,8 @@ class MergeEnv(AbstractEnv):
 
     def _is_terminal(self) -> bool:
         """The episode is over when a collision occurs or when the access ramp has been passed."""
-        return self.vehicle.crashed or self.vehicle.position[0] > 370 or self.vehicle.position[1] > 14 or self.vehicle.position[1] < -6
+        # return self.vehicle.crashed or self.vehicle.position[0] > 370 or self.vehicle.position[1] > 14 or self.vehicle.position[1] < -6
+        return  self.vehicle.position[0] > 370 or self.vehicle.position[1] > 14 or self.vehicle.position[1] < -6
 
     def reset(self) -> np.ndarray:
         super().reset()

@@ -118,7 +118,8 @@ class MPC(object):
         ----------
             @param numpy array - cost : length should be of batch_size
         """
-        COLLISION_REWARD: float = -1
+        COLLISION_REWARD: float = -10
+        OUT_REWARD: float = -1
         RIGHT_LANE_REWARD: float = 0.1
         HIGH_SPEED_REWARD: float = 0.02
         MERGING_SPEED_REWARD: float = -0.5
@@ -127,9 +128,11 @@ class MPC(object):
         crashed = abs(state[:,4]) < 0.05
         right_lane = abs(state[:,1]) < 0.1
         speed = state[:,2]
+        out = abs(state[:,1]) > 0.8
 
 
         reward = COLLISION_REWARD * crashed \
+                 + OUT_REWARD * out \
                  + RIGHT_LANE_REWARD * right_lane \
                  + HIGH_SPEED_REWARD * speed
         cost = -reward

@@ -84,8 +84,8 @@ class AbstractEnv(gym.Env):
             "action": {
                 "type": "DiscreteMetaAction"
             },
-            "simulation_frequency": 15,  # [Hz]
-            "policy_frequency": 1,  # [Hz]
+            "simulation_frequency": 10,  # [Hz]
+            "policy_frequency": 10,  # [Hz]
             "other_vehicles_type": "highway_env.vehicle.behavior.IDMVehicle",
             "screen_width": 600,  # [px]
             "screen_height": 150,  # [px]
@@ -168,15 +168,22 @@ class AbstractEnv(gym.Env):
         reward = self._reward(action)
         terminal = self._is_terminal()
 
-        info = {
-            "speed": self.vehicle.speed,
-            "crashed": self.vehicle.crashed,
-            "action": action,
-        }
-        try:
-            info["cost"] = self._cost(action)
-        except NotImplementedError:
-            pass
+        if self.vehicle.position[0] > 370:
+            info = 'success'
+        elif self.vehicle.position[1] > 14 or self.vehicle.position[1] < -6:
+            info = 'out'
+        else:
+            info = 'nothing'
+
+        # info = {
+        #     "speed": self.vehicle.speed,
+        #     "crashed": self.vehicle.crashed,
+        #     "action": action,
+        # }
+        # try:
+        #     info["cost"] = self._cost(action)
+        # except NotImplementedError:
+        #     pass
 
         return obs, reward, terminal, info
 

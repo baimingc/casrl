@@ -47,10 +47,10 @@ NP_config:
         np_hidden_list: [16, 2]         #[1024, 1024, 1024, 1024]
         np_hidden_list_decoder: [16, 16]         #[1024, 1024, 1024, 1024]
         np_latent_dim: 2
-        np_context_max_num: 200
+        np_context_max_num: 80
         np_predict_context_num: 200
 
     training_config:
         batch_size: 100
         n_epochs: 100            # how many epoches to train the dynamic model
-        learning_rate: 0.0002     # learning rate
+        learning_rate: 0.002     # learning rate
