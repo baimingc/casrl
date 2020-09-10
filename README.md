@@ -25,17 +25,10 @@ pip install -r requirements.txt
 ```
 python casrl_cartpole.py
 ```
-Parameters are stored in in ./config/config_cartpole.yml
-
-### Running experiments on Merge
-```
-python casrl_merge.py
-```
-Parameters are stored in in ./config/config_merge.yml
 
 ### Running experiments on Healthcare
 First install my [fork](https://github.com/baimingc/assistive-gym) of assistive_gym environment. Then run
 ```
 python casrl_healthcare.py
 ```
-Parameters are stored in in ./config/config_healthcare.yml
+Parameters are stored in in ./config
