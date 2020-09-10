@@ -1,0 +1,15 @@
+sphinx_rtd_theme
+sphinxcontrib-bibtex
+# jupyter-sphinx
+git+git://github.com/eleurent/jupyter-sphinx@master#egg=jupyter-sphinx
+gym
+numpy
+pygame
+matplotlib
+pandas
+
+# =========
+# Optionals
+# =========
+pytest
+scipy
