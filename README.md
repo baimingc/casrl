@@ -2,11 +2,9 @@
 
 Context-aware safe reinforcement learning in non-stationary environments
 
-<img src="assets/cp_short.gif?raw=true" width="45%"> 
-<img src="assets/cp_long.gif?raw=true" width="45%"> 
+<img src="assets/cp_short.gif?raw=true" width="45%"> <img src="assets/cp_long.gif?raw=true" width="45%"> 
 
-<img src="assets/hc_forward.gif?raw=true" width="45%"> 
-<img src="assets/hc_rotate.gif?raw=true" width="45%"> 
+<img src="assets/hc_forward.gif?raw=true" width="45%"> <img src="assets/hc_rotate.gif?raw=true" width="45%"> 
 
 ### Python3 requirements
 
