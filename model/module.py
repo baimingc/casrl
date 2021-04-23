@@ -5,14 +5,6 @@ import math
 import numpy as np
 
 '''
-According to deepmind imp and that[*] implementation
-'''
-
-
-
-
-
-'''
 fundamental building blocks MLP with n (hidden layers + Relu )   # Comment, the sequential infor is neglected
 one final layer without activation
 **Pytorch will automatically operate on the last dim**
@@ -251,12 +243,10 @@ class DeterministicEncoder(nn.Module):
 Decoder
 1. concatenate the target_x and latent variables r_star and z
 2. Then pass them input a MLP
-3. According to deepmind imp, then split the hidden to get mu and sigma
-    Maybe using reparamerization trick will break something here
+
  
 Can be attended with cross-attention *Whether to put the cross-attention in this encoder?
 
-From the deepmind implementation
 decoder_output_sizes = [HIDDEN_SIZE]*2 + [2] => decoder_hidden_dim_list[-1] = 2
 Here 2 comes from y_dim * 2
 
