@@ -1,10 +1,3 @@
-'''
-@Author: Zuxin Liu
-@Email: zuxinl@andrew.cmu.edu
-@Date:   2020-03-24 10:49:12
-@LastEditTime: 2020-05-08 14:37:14
-@Description:
-'''
 
 from __future__ import division
 from __future__ import absolute_import

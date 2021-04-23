@@ -1,10 +1,3 @@
-'''
-@Author: Zuxin Liu
-@Email: zuxinl@andrew.cmu.edu
-@Date:   2020-03-24 01:02:01
-@LastEditTime: 2020-03-24 10:49:27
-@Description:
-'''
 
 from __future__ import absolute_import
 from __future__ import print_function
