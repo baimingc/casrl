@@ -76,12 +76,7 @@ class NeuralProcessModel(nn.Module):
             Z = prior_dist.loc
         # Z (b, latent_dim)
 
-        # print('before unsequeeze, Z.size() =', Z.size())
-
         Z = Z.unsqueeze(1).repeat(1, target_size, 1)
-        # Z (b, target_size, latent_dim) verified
-
-        # print('after unsequeeze, Z.size() =', Z.size())
 
         # NOTICE: obtain r using deterministic path
         if self.use_deter_path:
@@ -89,18 +84,9 @@ class NeuralProcessModel(nn.Module):
             # R (B, target_size, latent_dim)
         else:
             R = None
-#         if print_latent:
-#             print(context_x.shape, target_x.shape)
-#             print('R',R.shape)
-#             print('Z',Z.shape)
 
         # Obtain the prediction
         dist, mu, sigma = self._decoder(R, Z, target_x)
-#         if print_latent:
-#             print(R)
-#         print(context_x.shape[1])
-#         if context_x.shape[1] == 199:
-#             print(R[0][0].item())
 
         # If we want to calculate the log_prob for training we will make use of the
         # target_y. At test time the target_y is not available so we return None.

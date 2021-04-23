@@ -105,15 +105,8 @@ class LatentEncoder(nn.Module):
         if latent_dim != hidden_dim_list[-1]:
             print('Warning, Check the dim of latent z and the dim of mlp last layer!')
 
-        # NOTICE: On my paper, we seems to substitute the mlp with LSTM
-        #  but we actually add a LSTM before the mlp
-        if use_lstm:
-            # self._encoder = LSTMBlock(input_dim, hidden_dim, batchnorm=batchnorm, dropout=dropout,
-            #                           num_layers=n_encoder_layers)
-            pass
         else:
             self.latent_encoder_mlp = MLP(input_size=self.input_dim, output_size_list=hidden_dim_list)
-            # Output should be (b, seq_len, hidden_dim_list[-1])
 
         if use_self_attn:
             self._self_attention = Attention(
@@ -133,17 +126,10 @@ class LatentEncoder(nn.Module):
         self._use_self_attn = use_self_attn
 
     def forward(self, x, y):
-        # print('x.size() =', x.size())
-        # print('y.size() =', y.size())
         encoder_input = torch.cat([x, y], dim=-1)
-        # encoder_input (b, seq_len, input_dim=input_x_dim + input_y_dim)
-        # = (b, seq_len, input_dim)
 
-        # NOTICE:Pass final axis through MLP
-        # print('encoder_input.size() =', encoder_input.size())
         hidden = self.latent_encoder_mlp(encoder_input)
         # hidden (b, seq_len, hidden_dim)
-
 
         # NOTICE: Aggregator: take the mean over all points
         if self._use_self_attn:
@@ -210,11 +196,7 @@ class DeterministicEncoder(nn.Module):
         if latent_dim != hidden_dim_list[-1]:
             print('Warning, Check the dim of latent z and the dim of mlp last layer!')
 
-        # NOTICE: In my paper, we seems to substitute the mlp with LSTM
-        #  but we actually add a LSTM before the mlp
         if use_lstm:
-            # self._encoder = LSTMBlock(input_dim, hidden_dim, batchnorm=batchnorm, dropout=dropout,
-            #                           num_layers=n_encoder_layers)
             pass
         else:
             self.deter_encoder_mlp = MLP(input_size=self.input_dim, output_size_list=hidden_dim_list)
@@ -300,23 +282,12 @@ class Decoder(nn.Module):
             self.decoder_input_dim = latent_dim + x_dim
 
         if use_lstm:
-            # self._decoder = LSTMBlock(hidden_dim_2, hidden_dim_2, batchnorm=batchnorm, dropout=dropout,
-            #                           num_layers=n_decoder_layers)
             pass
         else:
-            # self._decoder = BatchMLP(hidden_dim_2, hidden_dim_2, batchnorm=batchnorm, dropout=dropout,
-            #                          num_layers=n_decoder_layers)
             self.decoder_mlp = MLP(input_size=self.decoder_input_dim, output_size_list=self.hidden_dim_list)
-        # self._mean = nn.Linear(hidden_dim_2, y_dim)
-        # self._std = nn.Linear(hidden_dim_2, y_dim)
         self._use_deterministic_path = use_deterministic_path
-        # self._min_std = min_std
-        # self._use_lvar = use_lvar
 
     def forward(self, r, z, target_x):
-        # r:        (b, target_seq_len, latent_dim)
-        # z:        (b, target_seq_len, latent_dim)
-        # target_x: (b, target_seq_len, x_dim)
 
         # concatenate target_x and representation
         if self._use_deterministic_path:
@@ -328,17 +299,7 @@ class Decoder(nn.Module):
         mu_sigma = self.decoder_mlp(hidden_mu_sigma)
         # (b, target_len, 2 * y_dim)
 
-        # Get the mean and the variance ???
-        # print('type(mu_sigma) =', type(mu_sigma))
-        # print('mu_sigma.size() =', mu_sigma.size())
-        # output_debug = mu_sigma.split(chunks=2, dim=-1)
-        # print('output_debug[0].size() =', output_debug[0].size())
-
         mu, log_sigma = mu_sigma.chunk(chunks=2, dim=-1)
-        # print('mu.size() =', mu.size())
-        # print('log_sigma.size() =', log_sigma.size())
-        # mu (b, target_len, y_dim)
-        # sigma (b, target_len. y_dim)
 
         # Bound the variance
         sigma =0.1 + 0.9 * F.softplus(log_sigma)
